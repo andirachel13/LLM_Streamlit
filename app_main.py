@@ -170,8 +170,6 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
     except Exception as e:
         st.error(f"Error generating creative brief: {str(e)}")
         return None
-generating {content_type}: {str(e)}")
-        return None
 
 # Demo content
 DEMO_BRIEF = """
