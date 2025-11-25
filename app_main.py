@@ -59,8 +59,6 @@ JOURNEY_STAGES = {
     "advocacy": "Advocacy: Social proof, testimonials, referrals"
 }
 
-client = genai.Client(api_key="GeminiAPI")
-
 def configure_gemini(api_key):
     """Configure Gemini with API key"""
     try:
