@@ -105,12 +105,12 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
             image.save(img_bytes, format="PNG")
             img_bytes = img_bytes.getvalue()
 
-            response = client.models.generate_content(
+            response = client.models.generate_contents(
                 model="gemini-2.5-multimodal-preview",
                 content=[prompt, img_bytes]
             )
         else:
-            response = client.models.generate_content(
+            response = client.models.generate_contents(
                 model="gemini-2.5-flash",
                 content=prompt
             )
@@ -155,12 +155,12 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
             image.save(img_bytes, format="PNG")
             img_bytes = img_bytes.getvalue()
 
-            response = client.models.generate_content(
+            response = client.models.generate_contents(
                 model="gemini-2.5-multimodal-preview",
                 content=[prompt, img_bytes]
             )
         else:
-            response = client.models.generate_content(
+            response = client.models.generate_contents(
                 model="gemini-2.5-flash",
                 content=prompt
             )
