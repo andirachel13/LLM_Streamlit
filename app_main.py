@@ -1,8 +1,11 @@
 import streamlit as st
-from google import genai
+import google.genai as genai
 from PIL import Image
 import io
 import time
+
+client = genai.Client(api_key="YOUR_API_KEY")
+
 
 # Page configuration
 st.set_page_config(
@@ -64,7 +67,7 @@ def configure_gemini(api_key):
     try:
         genai.configure(api_key=api_key)
         # Test the configuration with a simple call
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         # Don't actually make the test call to avoid unnecessary errors
         st.session_state.gemini_configured = True
         return True
