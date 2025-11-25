@@ -304,7 +304,7 @@ def main():
     
     # Try to get API key from secrets first
     try:
-        secrets_api_key = st.secrets.get("GEMINI_API_KEY")
+        secrets_api_key = st.secrets.get("api_key")
         if secrets_api_key and not st.session_state.api_key:
             if configure_gemini(secrets_api_key):
                 st.session_state.api_key = secrets_api_key
@@ -534,7 +534,7 @@ def main():
             with st.chat_message("assistant"):
                 with st.spinner("Thinking..."):
                     try:
-                        model = genai.GenerativeModel('gemini-pro')
+                        model = genai.GenerativeModel('')
                         
                         chat_context = f"""
                         You are a senior marketing strategist. Based on this creative brief, answer the user's question.
