@@ -60,16 +60,11 @@ JOURNEY_STAGES = {
 }
 
 def configure_gemini(api_key):
-    """Configure Gemini with API key"""
     try:
-        # Create a client (no configure() in new SDK)
         client = genai.Client(api_key=api_key)
-
-        # Optionally store the client in session_state
         st.session_state.gemini_client = client
         st.session_state.gemini_configured = True
         return True
-
     except Exception as e:
         st.error(f"Invalid API key: {str(e)}")
         st.session_state.gemini_configured = False
