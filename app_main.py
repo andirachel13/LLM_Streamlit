@@ -1,10 +1,10 @@
 import streamlit as st
-import google.generativeai as genai
+import google as genai
 from PIL import Image
 import io
 import time
 
-client = genai.Client(api_key="YOUR_API_KEY")
+client = genai.Client(api_key="GeminiAPI")
 
 
 # Page configuration
