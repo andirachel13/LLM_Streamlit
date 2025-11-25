@@ -4,9 +4,6 @@ from PIL import Image
 import io
 import time
 
-client = genai.Client(api_key="GeminiAPI")
-
-
 # Page configuration
 st.set_page_config(
     page_title="Creative Brief Generator Pro",
