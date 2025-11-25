@@ -12,7 +12,6 @@ st.set_page_config(
 )
 
 # Initialize session state
-client = st.session_state.gemini_client
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "creative_brief" not in st.session_state:
