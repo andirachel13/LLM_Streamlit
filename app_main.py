@@ -76,8 +76,9 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
     """Generate creative brief using Gemini"""
     
     try:
-        client = st.session_state.gemini_client
+        client = st.session_state.gemini_client  # Must use configured client
         
+        # Construct the prompt
         prompt = f"""
         As a senior marketing strategist, generate a comprehensive creative brief.
 
@@ -97,23 +98,24 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
         Keep the brief professional yet actionable.
         """
 
+        # If you have an image, you can send it as part of multimodal content (optional)
         if image:
-            # Convert image to bytes for multimodal model
+            # For the new SDK, images can be passed as bytes in a multimodal call
             img_bytes = io.BytesIO()
             image.save(img_bytes, format="PNG")
             img_bytes = img_bytes.getvalue()
 
             response = client.models.generate_content(
                 model="gemini-2.5-multimodal-preview",
-                contents=[prompt, img_bytes]  # ✅ plural 'contents'
+                content=[prompt, img_bytes]
             )
         else:
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
-                contents=[prompt]  # ✅ plural 'contents'
+                content=prompt
             )
 
-        return response[0].text  # response is a list of generations
+        return response.text
 
     except Exception as e:
         st.error(f"Error generating creative brief: {str(e)}")
@@ -136,14 +138,15 @@ def generate_campaign_content(brief, content_type):
 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=[prompt]  # ✅ plural 'contents'
+            content=prompt
         )
 
-        return response[0].text  # response is a list
+        return response.text
 
     except Exception as e:
         st.error(f"Error generating {content_type}: {str(e)}")
         return None
+
         
 
 # Demo content
