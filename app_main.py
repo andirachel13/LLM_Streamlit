@@ -72,53 +72,29 @@ def configure_gemini(api_key):
         return False
 
 
-def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, journey_stage, additional_context=""):
-    """Generate creative brief using Gemini"""
+def generate_campaign_content(brief, content_type):
+    """Generate campaign content based on the creative brief"""
     
     try:
-        client = st.session_state.gemini_client  # Must use configured client
+        client = st.session_state.gemini_client
         
-        # Construct the prompt
-        prompt = f"""
-        As a senior marketing strategist, generate a comprehensive creative brief.
+        content_prompts = {
+            "social_media": f"Based on this creative brief, create 5 engaging social media posts:\n{brief}",
+            "email_copy": f"Based on this creative brief, write 2 email variations:\n{brief}",
+            "ad_copy": f"Based on this creative brief, create 3 ad variations for digital platforms:\n{brief}"
+        }
+        
+        prompt = content_prompts.get(content_type, content_prompts["social_media"])
 
-        CAMPAIGN CONTEXT:
-        - Primary Goal: {campaign_goal}
-        - Brand Archetype: {brand_archetype} - {BRAND_ARCHETYPES[brand_archetype]}
-        - Market Positioning: {positioning} - {POSITIONING_STRATEGIES[positioning]}
-        - Target Journey Stage: {journey_stage} - {JOURNEY_STAGES[journey_stage]}
-        - Additional Context: {additional_context}
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[prompt]  # ✅ plural 'contents'
+        )
 
-        Please provide a structured creative brief with these sections:
-
-        1. TARGET AUDIENCE PERSONA
-        2. BRAND POSITIONING & MESSAGING
-        3. CREATIVE DIRECTION
-
-        Keep the brief professional yet actionable.
-        """
-
-        # If you have an image, you can send it as part of multimodal content (optional)
-        if image:
-            # For the new SDK, images can be passed as bytes in a multimodal call
-            img_bytes = io.BytesIO()
-            image.save(img_bytes, format="PNG")
-            img_bytes = img_bytes.getvalue()
-
-            response = client.models.generate_contents(
-                model="gemini-2.5-multimodal-preview",
-                content=[prompt, img_bytes]
-            )
-        else:
-            response = client.models.generate_contents(
-                model="gemini-2.5-flash",
-                content=prompt
-            )
-
-        return response.text
+        return response[0].text  # response is a list
 
     except Exception as e:
-        st.error(f"Error generating creative brief: {str(e)}")
+        st.error(f"Error generating {content_type}: {str(e)}")
         return None
 
 
@@ -126,9 +102,8 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
     """Generate creative brief using Gemini"""
     
     try:
-        client = st.session_state.gemini_client  # Must use configured client
+        client = st.session_state.gemini_client
         
-        # Construct the prompt
         prompt = f"""
         As a senior marketing strategist, generate a comprehensive creative brief.
 
@@ -148,24 +123,23 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
         Keep the brief professional yet actionable.
         """
 
-        # If you have an image, you can send it as part of multimodal content (optional)
         if image:
-            # For the new SDK, images can be passed as bytes in a multimodal call
+            # Convert image to bytes for multimodal model
             img_bytes = io.BytesIO()
             image.save(img_bytes, format="PNG")
             img_bytes = img_bytes.getvalue()
 
-            response = client.models.generate_contents(
+            response = client.models.generate_content(
                 model="gemini-2.5-multimodal-preview",
-                content=[prompt, img_bytes]
+                contents=[prompt, img_bytes]  # ✅ plural 'contents'
             )
         else:
-            response = client.models.generate_contents(
+            response = client.models.generate_content(
                 model="gemini-2.5-flash",
-                content=prompt
+                contents=[prompt]  # ✅ plural 'contents'
             )
 
-        return response.text
+        return response[0].text  # response is a list of generations
 
     except Exception as e:
         st.error(f"Error generating creative brief: {str(e)}")
