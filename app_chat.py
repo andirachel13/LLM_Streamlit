@@ -5,9 +5,6 @@ from PIL import Image
 import io
 import time
 
-GOOGLE_API_KEY=userdata.get('GeminiAPI')
-genai.configure(api_key=GOOGLE_API_KEY)
-
 # Page configuration
 st.set_page_config(
     page_title="Creative Brief Generator Pro",
