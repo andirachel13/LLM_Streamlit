@@ -4,8 +4,6 @@ from PIL import Image
 import io
 import time
 
-client = genai.Client(api_key=st.secrets["GeminiAPI"])
-
 # Page configuration
 st.set_page_config(
     page_title="Creative Brief Generator Pro",
@@ -81,7 +79,7 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
     try:
         # Use multimodal model if image is provided
         if image:
-            model = genai.GenerativeModel('gemini-pro-vision')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             prompt = f"""
             As a senior marketing strategist, analyze the provided image and generate a comprehensive creative brief.
@@ -118,7 +116,7 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
             
             response = model.generate_content([prompt, image])
         else:
-            model = genai.GenerativeModel('gemini-pro')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             prompt = f"""
             As a senior marketing strategist, generate a comprehensive creative brief.
@@ -161,7 +159,7 @@ def generate_campaign_content(brief, content_type):
     """Generate specific campaign content based on the creative brief"""
     
     try:
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         content_prompts = {
             "social_media": f"""
