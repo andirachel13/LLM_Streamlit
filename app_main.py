@@ -76,141 +76,101 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
     """Generate creative brief using Gemini"""
     
     try:
-        # Use multimodal model if image is provided
+        client = st.session_state.gemini_client  # Must use configured client
+        
+        # Construct the prompt
+        prompt = f"""
+        As a senior marketing strategist, generate a comprehensive creative brief.
+
+        CAMPAIGN CONTEXT:
+        - Primary Goal: {campaign_goal}
+        - Brand Archetype: {brand_archetype} - {BRAND_ARCHETYPES[brand_archetype]}
+        - Market Positioning: {positioning} - {POSITIONING_STRATEGIES[positioning]}
+        - Target Journey Stage: {journey_stage} - {JOURNEY_STAGES[journey_stage]}
+        - Additional Context: {additional_context}
+
+        Please provide a structured creative brief with these sections:
+
+        1. TARGET AUDIENCE PERSONA
+        2. BRAND POSITIONING & MESSAGING
+        3. CREATIVE DIRECTION
+
+        Keep the brief professional yet actionable.
+        """
+
+        # If you have an image, you can send it as part of multimodal content (optional)
         if image:
-            model = genai.GenerativeModel('gemini-2.5-flash')
-            
-            prompt = f"""
-            As a senior marketing strategist, analyze the provided image and generate a comprehensive creative brief.
-            
-            CAMPAIGN CONTEXT:
-            - Primary Goal: {campaign_goal}
-            - Brand Archetype: {brand_archetype} - {BRAND_ARCHETYPES[brand_archetype]}
-            - Market Positioning: {positioning} - {POSITIONING_STRATEGIES[positioning]}
-            - Target Journey Stage: {journey_stage} - {JOURNEY_STAGES[journey_stage]}
-            - Additional Context: {additional_context}
-            
-            Please provide a structured creative brief with these sections:
-            
-            1. VISUAL ANALYSIS & MOOD
-            - Describe the visual style, colors, and mood of the image
-            - Key visual elements and their emotional impact
-            
-            2. TARGET AUDIENCE PERSONA
-            - Demographics, psychographics, and behaviors
-            - Core needs and pain points
-            
-            3. BRAND POSITIONING & MESSAGING
-            - Key messaging pillars (3-4 core messages)
-            - Brand voice and tone descriptors
-            - Unique selling proposition
-            
-            4. CREATIVE DIRECTION
-            - Visual style recommendations
-            - Content themes and storytelling approach
-            - Call-to-action strategy
-            
-            Keep the brief professional yet actionable. Focus on strategic insights.
-            """
-            response = client.models.generate_content([prompt, image])
+            # For the new SDK, images can be passed as bytes in a multimodal call
+            img_bytes = io.BytesIO()
+            image.save(img_bytes, format="PNG")
+            img_bytes = img_bytes.getvalue()
+
+            response = client.models.generate_content(
+                model="gemini-2.5-multimodal-preview",
+                content=[prompt, img_bytes]
+            )
         else:
-            model = genai.GenerativeModel('gemini-2.5-flash')
-            
-            prompt = f"""
-            As a senior marketing strategist, generate a comprehensive creative brief.
-            
-            CAMPAIGN CONTEXT:
-            - Primary Goal: {campaign_goal}
-            - Brand Archetype: {brand_archetype} - {BRAND_ARCHETYPES[brand_archetype]}
-            - Market Positioning: {positioning} - {POSITIONING_STRATEGIES[positioning]}
-            - Target Journey Stage: {journey_stage} - {JOURNEY_STAGES[journey_stage]}
-            - Additional Context: {additional_context}
-            
-            Please provide a structured creative brief with these sections:
-            
-            1. TARGET AUDIENCE PERSONA
-            - Demographics, psychographics, and behaviors
-            - Core needs and pain points
-            
-            2. BRAND POSITIONING & MESSAGING
-            - Key messaging pillars (3-4 core messages)
-            - Brand voice and tone descriptors
-            - Unique selling proposition
-            
-            3. CREATIVE DIRECTION
-            - Visual style recommendations
-            - Content themes and storytelling approach
-            - Call-to-action strategy
-            
-            Keep the brief professional yet actionable. Focus on strategic insights.
-            """
-            
-            response = model.generate_content(prompt)
-        
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                content=prompt
+            )
+
         return response.text
-        
+
     except Exception as e:
         st.error(f"Error generating creative brief: {str(e)}")
         return None
 
-def generate_campaign_content(brief, content_type):
-    """Generate specific campaign content based on the creative brief"""
+
+def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, journey_stage, additional_context=""):
+    """Generate creative brief using Gemini"""
     
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        client = st.session_state.gemini_client  # Must use configured client
         
-        content_prompts = {
-            "social_media": f"""
-            Based on this creative brief, create 5 engaging social media posts for Instagram/LinkedIn:
-            
-            {brief}
-            
-            Create posts that:
-            - Match the brand voice and target audience
-            - Include relevant hashtags
-            - Have compelling captions
-            - Specify visual suggestions for each post
-            
-            Format the response with clear headings for each post.
-            """,
-            
-            "email_copy": f"""
-            Based on this creative brief, write 2 email variations:
-            
-            {brief}
-            
-            Include:
-            - Compelling subject lines
-            - Engaging preheader text
-            - Clear body copy with benefits
-            - Strong call-to-action
-            - Personalization suggestions
-            
-            Format with clear separation between the two variations.
-            """,
-            
-            "ad_copy": f"""
-            Based on this creative brief, create 3 ad variations for digital platforms:
-            
-            {brief}
-            
-            For each ad include:
-            - Headline (max 40 characters)
-            - Primary text (max 125 characters)
-            - Description (max 150 characters)
-            - Call-to-action button text
-            - Target audience suggestions
-            
-            Format with clear numbering for each ad variation.
-            """
-        }
-        
-        prompt = content_prompts.get(content_type, content_prompts["social_media"])
-        response = client.models.generate_content(prompt)
+        # Construct the prompt
+        prompt = f"""
+        As a senior marketing strategist, generate a comprehensive creative brief.
+
+        CAMPAIGN CONTEXT:
+        - Primary Goal: {campaign_goal}
+        - Brand Archetype: {brand_archetype} - {BRAND_ARCHETYPES[brand_archetype]}
+        - Market Positioning: {positioning} - {POSITIONING_STRATEGIES[positioning]}
+        - Target Journey Stage: {journey_stage} - {JOURNEY_STAGES[journey_stage]}
+        - Additional Context: {additional_context}
+
+        Please provide a structured creative brief with these sections:
+
+        1. TARGET AUDIENCE PERSONA
+        2. BRAND POSITIONING & MESSAGING
+        3. CREATIVE DIRECTION
+
+        Keep the brief professional yet actionable.
+        """
+
+        # If you have an image, you can send it as part of multimodal content (optional)
+        if image:
+            # For the new SDK, images can be passed as bytes in a multimodal call
+            img_bytes = io.BytesIO()
+            image.save(img_bytes, format="PNG")
+            img_bytes = img_bytes.getvalue()
+
+            response = client.models.generate_content(
+                model="gemini-2.5-multimodal-preview",
+                content=[prompt, img_bytes]
+            )
+        else:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                content=prompt
+            )
+
         return response.text
-        
+
     except Exception as e:
-        st.error(f"Error generating {content_type}: {str(e)}")
+        st.error(f"Error generating creative brief: {str(e)}")
+        return None
+generating {content_type}: {str(e)}")
         return None
 
 # Demo content
