@@ -72,32 +72,6 @@ def configure_gemini(api_key):
         return False
 
 
-def generate_campaign_content(brief, content_type):
-    """Generate campaign content based on the creative brief"""
-    
-    try:
-        client = st.session_state.gemini_client
-        
-        content_prompts = {
-            "social_media": f"Based on this creative brief, create 5 engaging social media posts:\n{brief}",
-            "email_copy": f"Based on this creative brief, write 2 email variations:\n{brief}",
-            "ad_copy": f"Based on this creative brief, create 3 ad variations for digital platforms:\n{brief}"
-        }
-        
-        prompt = content_prompts.get(content_type, content_prompts["social_media"])
-
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[prompt]  # ✅ plural 'contents'
-        )
-
-        return response[0].text  # response is a list
-
-    except Exception as e:
-        st.error(f"Error generating {content_type}: {str(e)}")
-        return None
-
-
 def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, journey_stage, additional_context=""):
     """Generate creative brief using Gemini"""
     
@@ -144,6 +118,33 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
     except Exception as e:
         st.error(f"Error generating creative brief: {str(e)}")
         return None
+
+
+def generate_campaign_content(brief, content_type):
+    """Generate campaign content based on the creative brief"""
+    
+    try:
+        client = st.session_state.gemini_client
+        
+        content_prompts = {
+            "social_media": f"Based on this creative brief, create 5 engaging social media posts:\n{brief}",
+            "email_copy": f"Based on this creative brief, write 2 email variations:\n{brief}",
+            "ad_copy": f"Based on this creative brief, create 3 ad variations for digital platforms:\n{brief}"
+        }
+        
+        prompt = content_prompts.get(content_type, content_prompts["social_media"])
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[prompt]  # ✅ plural 'contents'
+        )
+
+        return response[0].text  # response is a list
+
+    except Exception as e:
+        st.error(f"Error generating {content_type}: {str(e)}")
+        return None
+        
 
 # Demo content
 DEMO_BRIEF = """
