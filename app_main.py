@@ -62,7 +62,7 @@ JOURNEY_STAGES = {
 def configure_gemini(api_key):
     """Configure Gemini with API key"""
     try:
-        genai.configure(api_key='GeminiAPI')
+        genai.congenai.client(api_key='GeminiAPI')
         # Test the configuration with a simple call
         model = genai.GenerativeModel('gemini-2.5-flash')
         # Don't actually make the test call to avoid unnecessary errors
