@@ -1,8 +1,9 @@
 import streamlit as st
-import google as genai
 from PIL import Image
 import io
 import time
+from google import genai
+client = genai.Client(api_key='GeminiAPI')
 
 # Page configuration
 st.set_page_config(
