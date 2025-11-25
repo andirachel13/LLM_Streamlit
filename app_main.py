@@ -308,7 +308,7 @@ def main():
         if secrets_api_key and not st.session_state.api_key:
             if configure_gemini(secrets_api_key):
                 st.session_state.api_key = secrets_api_key
-                st.session_state.demo_mode = False
+                st.session_state.demo_mode = True
     except:
         pass  # No secrets available, use manual input
     
@@ -335,7 +335,7 @@ def main():
         if api_key_input and api_key_input != st.session_state.api_key:
             if configure_gemini(api_key_input):
                 st.session_state.api_key = api_key_input
-                st.session_state.demo_mode = False
+                st.session_state.demo_mode = True
                 st.success("✅ API key configured successfully!")
             else:
                 st.session_state.api_key = ""
@@ -534,7 +534,7 @@ def main():
             with st.chat_message("assistant"):
                 with st.spinner("Thinking..."):
                     try:
-                        model = genai.GenerativeModel('')
+                        model = genai.GenerativeModel('gemini-2.5-flash')
                         
                         chat_context = f"""
                         You are a senior marketing strategist. Based on this creative brief, answer the user's question.
