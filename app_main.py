@@ -12,6 +12,7 @@ st.set_page_config(
 )
 
 # Initialize session state
+client = st.session_state.gemini_client
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "creative_brief" not in st.session_state:
@@ -62,16 +63,19 @@ JOURNEY_STAGES = {
 def configure_gemini(api_key):
     """Configure Gemini with API key"""
     try:
-        genai.client(api_key='GeminiAPI')
-        # Test the configuration with a simple call
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        # Don't actually make the test call to avoid unnecessary errors
+        # Create a client (no configure() in new SDK)
+        client = genai.Client(api_key=api_key)
+
+        # Optionally store the client in session_state
+        st.session_state.gemini_client = client
         st.session_state.gemini_configured = True
         return True
+
     except Exception as e:
         st.error(f"Invalid API key: {str(e)}")
         st.session_state.gemini_configured = False
         return False
+
 
 def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, journey_stage, additional_context=""):
     """Generate creative brief using Gemini"""
@@ -113,8 +117,7 @@ def generate_creative_brief(image, campaign_goal, brand_archetype, positioning, 
             
             Keep the brief professional yet actionable. Focus on strategic insights.
             """
-            
-            response = model.generate_content([prompt, image])
+            response = client.models.generate_content([prompt, image])
         else:
             model = genai.GenerativeModel('gemini-2.5-flash')
             
@@ -208,7 +211,7 @@ def generate_campaign_content(brief, content_type):
         }
         
         prompt = content_prompts.get(content_type, content_prompts["social_media"])
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(prompt)
         return response.text
         
     except Exception as e:
@@ -308,7 +311,7 @@ def main():
         if secrets_api_key and not st.session_state.api_key:
             if configure_gemini(secrets_api_key):
                 st.session_state.api_key = secrets_api_key
-                st.session_state.demo_mode = True
+                st.session_state.demo_mode = False
     except:
         pass  # No secrets available, use manual input
     
